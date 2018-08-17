@@ -5,13 +5,14 @@ from graph_tool.all import *
 import pymongo
 import os
 import subprocess
-import signal
 import copy
-from tags import tags
-import analysis_util
+
+from Analysis import analysis_util
+
 env = analysis_util.set_env()
 DIR = env["mongo"] + "/data"
 DATADIR = env["txn_data"]
+
 
 class TxnGraph(object):
     """
@@ -61,12 +62,12 @@ class TxnGraph(object):
     # PRIVATE
 
     def __init__(self,
-                *args,
-                snap=True,
-                save=True,
-                load=False,
-                previous=None,
-                **kwargs):
+                 *args,
+                 snap=True,
+                 save=True,
+                 load=False,
+                 previous=None,
+                 **kwargs):
 
         self.f_pickle = None
         self.f_snapshot = None
@@ -292,12 +293,12 @@ class TxnGraph(object):
 
     def save(self):
         """Pickle TxnGraph. Save the graph_tool Graph object separately."""
-        if not os.path.exists(DATADIR+"/pickles"):
-            os.makedirs(DATADIR+"/pickles")
-        if not os.path.exists(DATADIR+"/graphs"):
-            os.makedirs(DATADIR+"/graphs")
-        if not os.path.exists(DATADIR+"/snapshots"):
-            os.makedirs(DATADIR+"/snapshots")
+        if not os.path.exists(DATADIR + "/pickles"):
+            os.makedirs(DATADIR + "/pickles")
+        if not os.path.exists(DATADIR + "/graphs"):
+            os.makedirs(DATADIR + "/graphs")
+        if not os.path.exists(DATADIR + "/snapshots"):
+            os.makedirs(DATADIR + "/snapshots")
 
         # We cannot save any of the graph_tool objects so we need to stash
         # them in a temporary object
@@ -377,8 +378,8 @@ class TxnGraph(object):
         w <int> (optional, default=5000): width
         h <int> (optional, default=5000): height
         """
-        w = kwargs["w"] if "w" in kwargs else 1920*2
-        h = kwargs["h"] if "h" in kwargs else 1080*2
+        w = kwargs["w"] if "w" in kwargs else 1920 * 2
+        h = kwargs["h"] if "h" in kwargs else 1080 * 2
 
         # We want the vertices to be sized proportional to the number of
         # transactions they are part of
@@ -391,7 +392,7 @@ class TxnGraph(object):
             return
 
         # Testing to allow negative numbers
-        deg.a = abs(deg.a)**0.5
+        deg.a = abs(deg.a) ** 0.5
 
         # For some reason this works
         # (TODO figure out how to scale this consistently)
@@ -399,8 +400,8 @@ class TxnGraph(object):
 
         # We want the largest node to be roughly 10%
         # of the width of the image (somewhat arbitrary)
-        scale = (0.03*w)/max(deg.a)
-        deg.a = deg.a*scale
+        scale = (0.03 * w) / max(deg.a)
+        deg.a = deg.a * scale
 
         # For some reason this doesn't work
         # deg.a = deg.a*scale # For some reason this blows up the output
@@ -411,15 +412,15 @@ class TxnGraph(object):
 
         # Draw the graph
         graph_draw(self.graph,
-            pos=pos,
-            vertex_size=deg,
-            vertex_fill_color=deg,
-            pen_width=0,
-            bg_color=[1,1,1,1],
-            output=self.f_snapshot,
-            output_size=(w,h),
-            fit_view=True
-        )
+                   pos=pos,
+                   vertex_size=deg,
+                   vertex_fill_color=deg,
+                   pen_width=0,
+                   bg_color=[1, 1, 1, 1],
+                   output=self.f_snapshot,
+                   output_size=(w, h),
+                   fit_view=True
+                   )
 
     def extend(self, n, save=True):
         """

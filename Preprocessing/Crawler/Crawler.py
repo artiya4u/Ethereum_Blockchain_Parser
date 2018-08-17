@@ -1,7 +1,7 @@
 """A client to interact with node and to save data to mongo."""
 
 from pymongo import MongoClient
-import crawler_util
+
 import requests
 import json
 import sys
@@ -9,6 +9,9 @@ import os
 import logging
 import time
 import tqdm
+
+from Preprocessing.Crawler import crawler_util
+
 sys.path.append(os.path.realpath(os.path.dirname(__file__)))
 
 DIR = os.environ['BLOCKCHAIN_MONGO_DATA_DIR']

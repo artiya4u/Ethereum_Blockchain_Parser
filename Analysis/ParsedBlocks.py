@@ -1,10 +1,11 @@
 """Interace to parse aggregate data from snapshots of the Ethereum network."""
 
-import tags
-from ContractMap import ContractMap
 import os
 import csv
 import requests
+
+from Analysis import tags
+from Analysis.ContractMap import ContractMap
 
 
 class ParsedBlocks(object):
@@ -91,9 +92,9 @@ class ParsedBlocks(object):
             "p2p_txn_count": 0,
             "peer_txns_w_data": 0,
             "num_addr": 0,
-            "total_supply": 7200990.5 + 5.0*self.end_block,
+            "total_supply": 7200990.5 + 5.0 * self.end_block,
             "priceUSD": self._getPrice(self.start_timestamp, self.end_timestamp)
-            }
+        }
 
         self.peer_wealth = list()
         self.headers = None
@@ -135,7 +136,7 @@ class ParsedBlocks(object):
             base, pair, start, end, period
         )
         data = requests.get(req_str).json()
-        return data[len(data)-1]['close']
+        return data[len(data) - 1]['close']
 
     def _isPeer(self, addr):
         """

@@ -1,14 +1,11 @@
 """Stream updates to the blockchain from geth to mongo."""
-import sys
 import os
-sys.path.append("Preprocessing/Crawler")
-from Crawler import Crawler
-sys.path.append("Analysis")
-from TxnGraph import TxnGraph
-from ParsedBlocks import ParsedBlocks
-sys.path.append("Scripts")
-from extract import syncCSV
 import tqdm
+
+from Analysis.ParsedBlocks import ParsedBlocks
+from Analysis.TxnGraph import TxnGraph
+from Preprocessing.Crawler.Crawler import Crawler
+from Scripts.extract import syncCSV
 
 
 def syncMongo(c):
@@ -18,13 +15,14 @@ def syncMongo(c):
     counter = 0
     if gethBlock > mongoBlock:
         print("Syncing Mongo...")
-        for i in range(gethBlock-mongoBlock):
-            c.add_block(mongoBlock+i)
+        for i in range(gethBlock - mongoBlock):
+            c.add_block(mongoBlock + i)
         counter += 1
         if counter >= 100:
             print("Successfully parsed {} blocks.".format(counter))
             print("Currently at block {} of {}".format(mongoBlock, gethBlock))
             counter = 0
+
 
 if __name__ == "__main__":
     # Print success every N iterations
@@ -50,8 +48,8 @@ if __name__ == "__main__":
     _highestBlockMongo = c.highestBlockMongo()
 
     if prev_max_block + STEP <= _highestBlockMongo:
-        t = TxnGraph(1, prev_max_block+STEP)
-        for i in tqdm.tqdm(range(_highestBlockMongo//STEP)):
+        t = TxnGraph(1, prev_max_block + STEP)
+        for i in tqdm.tqdm(range(_highestBlockMongo // STEP)):
             if t.end_block > prev_max_block:
                 blocks = ParsedBlocks(t)
                 t.extend(STEP)
